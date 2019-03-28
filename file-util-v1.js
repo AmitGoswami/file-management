@@ -1,17 +1,17 @@
 const fs = require('fs')
-var fileMapList = [];
 
+var listFile = function(dirname, fileMapList) {
+  fileMapList = fileMapList || [];
 
-var listFile = function(dirname) {
   var fileMap = {};
-  var filelist = [];
+  // read all files in the directory
   var data = fs.readdirSync(dirname);
   fileMap.dirName = dirname;
   fileMap.fileList = data;
 
+  // iterate all the files to check if its a directory or not
   data.forEach(file => {
-    var fileName;
-    fileName = dirname + '\\' + file;
+    var fileName = dirname + '\\' + file;
     var stat;
     try {
       stat = fs.statSync(fileName);
@@ -20,10 +20,9 @@ var listFile = function(dirname) {
     }
 
     if (stat && stat.isDirectory()) {
+      // if the current file is directory read all the files in it.
       // recurcive
-      listFile(fileName)
-    } else {
-      filelist.push(file);
+      listFile(fileName, fileMapList)
     }
   });
   fileMapList.push(fileMap);
