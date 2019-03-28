@@ -1,0 +1,23 @@
+{
+  "name": "file-management",
+  "version": "1.0.0",
+  "description": "node-js project for learning",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AmitGoswami/file-management.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AmitGoswami/file-management/issues"
+  },
+  "homepage": "https://github.com/AmitGoswami/file-management#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
