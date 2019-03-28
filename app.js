@@ -7,8 +7,9 @@ server.get('/', (req, res) => {
 });
 
 server.get('/files', (req, res) => {
-  var fileList = file.listFile('.');
-  res.send(fileList);
+  var fileList = file.listFile(req.query.path);
+  res.header("Content-Type", 'application/json');
+  res.send(JSON.stringify(fileList, null, 4));
 })
 
 server.listen(8080, () => {
