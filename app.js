@@ -3,16 +3,14 @@ const express = require('express');
 const server = express();
 
 server.get('/', (req, res) => {
-  res.redirect('/welcome');
+  res.redirect('/files');
 });
 
-server.get('/welcome', (req, res) => {
-  res.send('welcome buddy');
+server.get('/files', (req, res) => {
+  var fileList = file.listFile('.');
+  res.send(fileList);
 })
 
-server.get('/welcome/:user', (req, res) => {
-  res.send('welcome ' + req.params.user);
-})
 server.listen(8080, () => {
   console.log('listening on 8080')
 })

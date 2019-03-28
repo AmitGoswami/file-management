@@ -1,13 +1,12 @@
 const fs = require('fs')
 
-var readFile = function(filename, charset) {
-  fs.readFile(filename, charset, function(err, data) {
-    if (err) {
-      console.log(err)
-    } else {
-      console.log(data);
-    }
+var listFile = function(dirname) {
+  var filelist = [];
+  var data = fs.readdirSync(dirname);
+  data.forEach(file => {
+    filelist.push(file);
   });
+  return filelist;
 }
 
-exports.readFile = readFile;
+exports.listFile = listFile;
