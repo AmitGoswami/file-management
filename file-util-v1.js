@@ -83,3 +83,4 @@ var fileWithExtn = function(dirname, _extn) {
   return extnFileList;
 }
 exports.listFile = listFile;
+exports.renameSRTtoVideoFileName = renameSRTtoVideoFileName;
