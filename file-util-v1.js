@@ -1,5 +1,5 @@
 const fs = require('fs')
-
+const subtitleFile = 'srt';
 var listFile = function(dirname, fileMapList) {
   fileMapList = fileMapList || [];
 
@@ -30,22 +30,31 @@ var listFile = function(dirname, fileMapList) {
 }
 var renameSRTtoVideoFileName = function(dirname) {
   var videoFileNameFormat = {
-    serialName: '1,2',
-    episodeNumber: '3',
-    episodeName: '4',
-    nameSeparator: ' '
+    episodeNumber: '4',
+    nameSeparator: '.'
   };
-  const subtitleFile = 'srt';
+  
   var listOfFiles = fs.readdirSync(dirname);
+  
   listOfFiles.forEach(file => {
-    var extn = file.substring(file.lastIndexOf('.') + 1);
+    
+    // check for the video file
     if (!file.includes(subtitleFile)) {
-      file = file.substring(0, file.lastIndexOf('.'));
-      var episodeName = file.split(videoFileNameFormat.nameSeparator)[videoFileNameFormat.episodeName - 1];
+
+      // get fileName of the video to rename the matching subtitle
+      var videoFileName = file.substring(0, file.lastIndexOf('.'));
+      
+      // get episode number
+      var episodeNumber = videoFileName.split(videoFileNameFormat.nameSeparator)[videoFileNameFormat.episodeNumber-1];
+      
+      // get all the subtitle files 
       var fileWithextn = fileWithExtn(dirname, subtitleFile);
+      
       fileWithextn.forEach(filename => {
-        if (filename.includes(episodeName)) {
-          var newFileName = file.substring(file.lastIndexOf('.') + 1) + '.' + subtitleFile;
+
+        // if the subtitle file matches with the video episode number, rename it
+        if (filename.toUpperCase().includes(episodeNumber.toUpperCase())) {
+          var newFileName = videoFileName + '.' + subtitleFile;
           if (newFileName != filename) {
             console.log(`renaming file "${filename}" to "${newFileName}"`);
             fs.rename(dirname + '\\' + filename, dirname + '\\' + newFileName, function(err) {
@@ -59,6 +68,9 @@ var renameSRTtoVideoFileName = function(dirname) {
     }
   });
 }
+
+
+// get all the files with the extn as _extn
 var fileWithExtn = function(dirname, _extn) {
   var listOfFiles = fs.readdirSync(dirname);
   var extnFileList = [];
@@ -70,5 +82,4 @@ var fileWithExtn = function(dirname, _extn) {
   });
   return extnFileList;
 }
-renameSRTtoVideoFileName("C:\\Users\\amigo\\Downloads\\12 Monkeys Season 3 Complete 720p HDTV x264 [i_c]")
-//exports.listFile = listFile;
+exports.listFile = listFile;
