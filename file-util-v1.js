@@ -1,6 +1,9 @@
-const fs = require('fs')
+const { FILE } = require('dns');
+const fs = require('fs');
+const mime = require("mime");
+
 const subtitleFile = 'srt';
-var listFile = function(dirname, fileMapList) {
+var listFile = function (dirname, fileMapList) {
   fileMapList = fileMapList || [];
 
   var fileMap = {};
@@ -12,14 +15,9 @@ var listFile = function(dirname, fileMapList) {
   // iterate all the files to check if its a directory or not
   data.forEach(file => {
     var fileName = dirname + '\\' + file;
-    var stat;
-    try {
-      stat = fs.statSync(fileName);
-    } catch (e) {
-      console.log(e);
-    }
+    var isDir = isDirectory(fileName);
 
-    if (stat && stat.isDirectory()) {
+    if (isDir === true) {
       // if the current file is directory read all the files in it.
       // recurcive
       listFile(fileName, fileMapList)
@@ -28,28 +26,28 @@ var listFile = function(dirname, fileMapList) {
   fileMapList.push(fileMap);
   return fileMapList;
 }
-var renameSRTtoVideoFileName = function(dirname) {
+var renameSRTtoVideoFileName = function (dirname) {
   var videoFileNameFormat = {
     episodeNumber: '4',
     nameSeparator: '.'
   };
-  
+
   var listOfFiles = fs.readdirSync(dirname);
-  
+
   listOfFiles.forEach(file => {
-    
+
     // check for the video file
     if (!file.includes(subtitleFile)) {
 
       // get fileName of the video to rename the matching subtitle
       var videoFileName = file.substring(0, file.lastIndexOf('.'));
-      
+
       // get episode number
-      var episodeNumber = videoFileName.split(videoFileNameFormat.nameSeparator)[videoFileNameFormat.episodeNumber-1];
-      
+      var episodeNumber = videoFileName.split(videoFileNameFormat.nameSeparator)[videoFileNameFormat.episodeNumber - 1];
+
       // get all the subtitle files 
       var fileWithextn = fileWithExtn(dirname, subtitleFile);
-      
+
       fileWithextn.forEach(filename => {
 
         // if the subtitle file matches with the video episode number, rename it
@@ -57,7 +55,7 @@ var renameSRTtoVideoFileName = function(dirname) {
           var newFileName = videoFileName + '.' + subtitleFile;
           if (newFileName != filename) {
             console.log(`renaming file "${filename}" to "${newFileName}"`);
-            fs.rename(dirname + '\\' + filename, dirname + '\\' + newFileName, function(err) {
+            fs.rename(dirname + '\\' + filename, dirname + '\\' + newFileName, function (err) {
               if (err) {
                 console.log(err);
               }
@@ -71,7 +69,7 @@ var renameSRTtoVideoFileName = function(dirname) {
 
 
 // get all the files with the extn as _extn
-var fileWithExtn = function(dirname, _extn) {
+var fileWithExtn = function (dirname, _extn) {
   var listOfFiles = fs.readdirSync(dirname);
   var extnFileList = [];
   listOfFiles.forEach(file => {
@@ -82,5 +80,54 @@ var fileWithExtn = function(dirname, _extn) {
   });
   return extnFileList;
 }
+
+var organizeFiles = function (dirname) {
+  var files = fs.readdirSync(dirname);
+  files.forEach(file => {
+    console.log('reading ' + file)
+    var isDir = isDirectory(dirname + '/' +file);
+    if (isDir === true) {
+      console.log(file + ' is a directory, skipping the process')
+      return;
+    }
+    var fullfileName = dirname + '/' + file;
+    var fileType = getFileType(fullfileName);
+    var newDir = dirname + '/' + fileType;
+    if (!fs.existsSync(newDir)) {
+      fs.mkdirSync(newDir);
+    }
+    fs.rename(fullfileName, newDir + '/' + file, function (err) {
+      if (err) {
+        console.log(err);
+      }
+    });
+  });
+
+}
+
+var getFileType = function (filename) {
+  var extn = getFileExtension(filename);
+  var fileType = mime.lookup(extn);
+  var type = fileType.split('/')[1];
+  return type;
+}
+
+var isDirectory = function (dirname) {
+  var isDir = false;
+  try {
+    isDir = fs.lstatSync(dirname).isDirectory();
+  } catch (e) {
+    console.log(e);
+  }
+  return isDir;
+}
+
+
+var getFileExtension = function (filename) {
+  return filename.substring(filename.lastIndexOf('.') + 1, filename.length);;
+}
+
+organizeFiles('C:/Users/Godzilla/Downloads');
 exports.listFile = listFile;
 exports.renameSRTtoVideoFileName = renameSRTtoVideoFileName;
+exports.organizeFiles = organizeFiles;
