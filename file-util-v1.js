@@ -84,13 +84,14 @@ var fileWithExtn = function (dirname, _extn) {
 var organizeFiles = function (dirname) {
   var files = fs.readdirSync(dirname);
   files.forEach(file => {
-    console.log('reading ' + file)
-    var isDir = isDirectory(dirname + '/' +file);
+    var fullfileName = dirname + '/' + file;
+    console.log('reading ' + fullfileName)
+    var isDir = isDirectory(fullfileName);
     if (isDir === true) {
       console.log(file + ' is a directory, skipping the process')
       return;
     }
-    var fullfileName = dirname + '/' + file;
+    
     var fileType = getFileType(fullfileName);
     var newDir = dirname + '/' + fileType;
     if (!fs.existsSync(newDir)) {
@@ -127,7 +128,6 @@ var getFileExtension = function (filename) {
   return filename.substring(filename.lastIndexOf('.') + 1, filename.length);;
 }
 
-organizeFiles('C:/Users/Godzilla/Downloads');
 exports.listFile = listFile;
 exports.renameSRTtoVideoFileName = renameSRTtoVideoFileName;
 exports.organizeFiles = organizeFiles;
