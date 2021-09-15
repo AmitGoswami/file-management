@@ -19,5 +19,8 @@
   "homepage": "https://github.com/AmitGoswami/file-management#readme",
   "dependencies": {
     "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "@types/node": "^16.9.1"
   }
 }
