@@ -18,6 +18,12 @@ server.get('/renameSRTtoVideoFileName', (req, res) => {
   res.send(JSON.stringify({"Status": "Completed"}, null, 4));
 })
 
+server.get('/organizeFiles', (req, res) => {
+  file.organizeFiles(req.query.path);
+  res.header("Content-Type", 'application/json');
+  res.send(JSON.stringify({"Status": "Completed"}, null, 4));
+})
+
 server.listen(8080, () => {
   console.log('listening on 8080')
 })

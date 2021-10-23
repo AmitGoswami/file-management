@@ -25,7 +25,7 @@ export function listFile(dirname: string, fileMapList: fileMap[]) {
 
     // iterate all the files to check if its a directory or not
     data.forEach(file => {
-        var fileName: string = dirname + '\\' + file;
+        var fileName: string = dirname + '/' + file;
         var isDir: boolean = isDirectory(fileName);
 
         if (isDir == true) {
